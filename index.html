@@ -35,7 +35,6 @@
     padding: 0;
   }
 
-  /* HEADER */
   .header {
     border-bottom: 2px solid var(--blue);
     padding: 24px 48px;
@@ -77,7 +76,6 @@
     margin-bottom: 2px;
   }
 
-  /* CAVEAT BANNER */
   .caveat {
     background: var(--blue-light);
     border-bottom: 1px solid var(--border);
@@ -87,10 +85,8 @@
     font-weight: 500;
   }
 
-  /* MAIN LAYOUT */
   .main { padding: 40px 48px; max-width: 1200px; }
 
-  /* SECTION LABEL */
   .section-label {
     font-size: 12px;
     letter-spacing: 0;
@@ -102,7 +98,6 @@
 
   .section-label:first-of-type { margin-top: 0; }
 
-  /* KPI GRID */
   .kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -171,11 +166,11 @@
     margin-top: 2px;
   }
 
-  .kpi-delta.up { color: var(--green); }
+  .kpi-delta.up   { color: var(--green); }
   .kpi-delta.down { color: var(--red); }
   .kpi-delta.flat { color: var(--text-muted); }
 
-  .kpi-delta .arrow { font-size: 10px; }
+  .kpi-delta .arrow       { font-size: 10px; }
   .kpi-delta .delta-label { font-weight: 400; color: var(--text-muted); margin-left: 2px; }
 
   .kpi-tag {
@@ -191,11 +186,10 @@
 
   .tag-green { background: var(--green-light); color: var(--green); }
   .tag-amber { background: var(--amber-light); color: var(--amber); }
-  .tag-red { background: var(--red-light); color: var(--red); }
-  .tag-blue { background: var(--blue-light); color: var(--blue); }
-  .tag-gray { background: var(--blue-pale); color: var(--text-muted); }
+  .tag-red   { background: var(--red-light);   color: var(--red); }
+  .tag-blue  { background: var(--blue-light);  color: var(--blue); }
+  .tag-gray  { background: var(--blue-pale);   color: var(--text-muted); }
 
-  /* TABLE */
   .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -226,11 +220,7 @@
   .data-table tr:last-child td { border-bottom: none; }
   .data-table tr:hover td { background: var(--blue-pale); }
 
-  .bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .bar-wrap { display: flex; align-items: center; gap: 10px; }
 
   .bar-bg {
     flex: 1;
@@ -257,22 +247,12 @@
     color: var(--blue);
   }
 
-  /* PAGE TABLE */
   .page-row td:first-child {
     font-size: 12px;
     font-weight: 500;
     color: var(--text-muted);
   }
 
-  .engagement-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-  }
-
-  /* ACTIONS */
   .actions-list {
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -299,14 +279,13 @@
     margin-top: 4px;
   }
 
-  .status-done { background: var(--green); }
+  .status-done        { background: var(--green); }
   .status-in-progress { background: #F59E0B; }
-  .status-planned { background: var(--text-muted); opacity: 0.5; }
+  .status-planned     { background: var(--text-muted); opacity: 0.5; }
 
   .action-text { flex: 1; line-height: 1.6; color: var(--text); font-weight: 400; }
   .action-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-weight: 500; }
 
-  /* NOTES */
   .notes-box {
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -321,10 +300,8 @@
 
   .notes-box strong { color: var(--text); font-weight: 600; }
 
-  /* RESPONSIVE */
   @media (max-width: 900px) {
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    .kpi-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .kpi-grid, .kpi-grid-2 { grid-template-columns: repeat(2, 1fr); }
     .header, .main, .caveat { padding-left: 24px; padding-right: 24px; }
   }
 </style>
@@ -334,245 +311,104 @@
 <div class="header">
   <div class="header-left">
     <h1>Pavilion — Site Performance</h1>
-    <p>Baseline dashboard · Data reliable from May 13, 2026 forward</p>
+    <p>Weekly snapshot · <span id="val-week-label">loading…</span></p>
   </div>
   <div class="header-right">
     <strong>Last updated</strong>
-    June 2, 2026
+    <span id="val-last-updated">—</span>
   </div>
 </div>
 
 <div class="caveat">
-  ⚠ Two date ranges in use: traffic + source data is May 13 – Jun 2 (post-attribution fix). Application funnel is quarter-to-date (Apr 1 – Jun 2) for a stable sample. ~33% of sessions show as "Unassigned" in GA4 due to ongoing UTM tracking issues — channel data is directional.
+  ℹ ~33% of sessions show as "Unassigned" in GA4 due to ongoing UTM tracking issues — channel data is directional. Application and membership data from HubSpot.
 </div>
 
 <div class="main">
 
-  <!-- CONVERSION -->
-  <div class="section-label">Conversion</div>
+  <div class="section-label">This week</div>
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="kpi-label">Applications (step 1)</div>
-      <div class="kpi-value">1,995</div>
-      <div class="kpi-delta up"><span class="arrow">↑</span> +8% <span class="delta-label">vs Q2 last year</span></div>
-      <div class="kpi-sub">QTD · Apr 1 – Jun 2 · from HubSpot</div>
+      <div class="kpi-label">Sessions</div>
+      <div class="kpi-value" id="val-sessions">—</div>
+      <div class="kpi-delta flat" id="delta-sessions"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">total sessions this week · GA4</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Applications started</div>
+      <div class="kpi-value" id="val-apps">—</div>
+      <div class="kpi-delta flat" id="delta-apps"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">step 1 completions · HubSpot</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">ICP applications</div>
-      <div class="kpi-value">327</div>
-      <div class="kpi-delta flat"><span class="arrow">→</span> no prior baseline <span class="delta-label"></span></div>
-      <div class="kpi-sub">QTD · step 1 completions · from HubSpot</div>
+      <div class="kpi-value" id="val-icp">—</div>
+      <div class="kpi-delta flat" id="delta-icp"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">qualified applicants · HubSpot</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">ICP rate</div>
-      <div class="kpi-value">16.4%</div>
-      <div class="kpi-delta flat"><span class="arrow">→</span> no prior baseline <span class="delta-label"></span></div>
-      <div class="kpi-sub">327 ICP / 1,995 total apps</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Site-to-app conversion</div>
-      <div class="kpi-value pending">~2.3%</div>
-      <div class="kpi-delta flat"><span class="arrow">→</span> directional only</div>
-      <div class="kpi-sub">550 step 1 (May 13) / 24,272 sessions</div>
-      <div class="kpi-tag tag-amber">date ranges differ</div>
+      <div class="kpi-label">Site conversion</div>
+      <div class="kpi-value" id="val-conversion">—</div>
+      <div class="kpi-delta flat" id="delta-conversion"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">sessions → application started</div>
     </div>
   </div>
 
   <div class="kpi-grid-2" style="margin-top:1px;">
     <div class="kpi-card">
-      <div class="kpi-label">Step 1 → Step 2 completion</div>
-      <div class="kpi-value">75.4%</div>
-      <div class="kpi-delta up"><span class="arrow">↑</span> +12pp <span class="delta-label">vs HubSpot form baseline</span></div>
-      <div class="kpi-sub">QTD · 1,505 of 1,995 reach step 2</div>
-      <div class="kpi-tag tag-green">healthy</div>
+      <div class="kpi-label">New users</div>
+      <div class="kpi-value" id="val-new-users">—</div>
+      <div class="kpi-delta flat" id="delta-new-users"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">first-time visitors · GA4</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Step 2 → member conversion</div>
-      <div class="kpi-value">22.7%</div>
-      <div class="kpi-delta flat"><span class="arrow">→</span> no prior baseline</div>
-      <div class="kpi-sub">QTD · 341 members from 1,505 step 2</div>
+      <div class="kpi-label">Completion rate</div>
+      <div class="kpi-value" id="val-completion">—</div>
+      <div class="kpi-delta flat" id="delta-completion"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">step 1 → submitted · HubSpot</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">ICP share of new members</div>
-      <div class="kpi-value">32%</div>
-      <div class="kpi-delta flat"><span class="arrow">→</span> no prior baseline</div>
-      <div class="kpi-sub">QTD · 109 ICP of 341 new members</div>
-      <div class="kpi-tag tag-green">quality signal</div>
+      <div class="kpi-label">Members started</div>
+      <div class="kpi-value" id="val-members">—</div>
+      <div class="kpi-delta flat" id="delta-members"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">new memberships this week · HubSpot</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Time to application</div>
-      <div class="kpi-value pending">tbd</div>
-      <div class="kpi-sub">first touch → submission · needs calc</div>
-      <div class="kpi-tag tag-gray">q3 target</div>
+      <div class="kpi-label">Added to waitlist</div>
+      <div class="kpi-value" id="val-waitlist">—</div>
+      <div class="kpi-delta flat" id="delta-waitlist"><span class="arrow">→</span> loading</div>
+      <div class="kpi-sub">ICP to waitlist this week · HubSpot</div>
     </div>
   </div>
 
-  <!-- TRAFFIC -->
   <div class="section-label">Traffic by source</div>
   <table class="data-table">
     <thead>
       <tr>
         <th>Channel</th>
         <th>Sessions</th>
-        <th>Share</th>
-        <th>Avg engagement</th>
-        <th>Note</th>
+        <th>WoW change</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>Unassigned</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill unassigned" style="width:100%"></div></div>
-            <span class="sessions-num">8,097</span>
-          </div>
-        </td>
-        <td>33%</td>
-        <td>8.7s</td>
-        <td><span class="kpi-tag tag-amber">attribution gap</span></td>
-      </tr>
-      <tr>
-        <td>Direct</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:90%"></div></div>
-            <span class="sessions-num">7,301</span>
-          </div>
-        </td>
-        <td>30%</td>
-        <td>11.1s</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Organic Search</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:40%"></div></div>
-            <span class="sessions-num">3,272</span>
-          </div>
-        </td>
-        <td>13%</td>
-        <td>38.3s</td>
-        <td><span class="kpi-tag tag-green">highest engagement</span></td>
-      </tr>
-      <tr>
-        <td>Organic Social</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:34%"></div></div>
-            <span class="sessions-num">2,754</span>
-          </div>
-        </td>
-        <td>11%</td>
-        <td>6.9s</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Referral</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:12%"></div></div>
-            <span class="sessions-num">955</span>
-          </div>
-        </td>
-        <td>4%</td>
-        <td>27.1s</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Email</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:10%"></div></div>
-            <span class="sessions-num">790</span>
-          </div>
-        </td>
-        <td>3%</td>
-        <td>32.5s</td>
-        <td><span class="kpi-tag tag-green">strong intent</span></td>
-      </tr>
-      <tr>
-        <td>Paid Search</td>
-        <td>
-          <div class="bar-wrap">
-            <div class="bar-bg"><div class="bar-fill" style="width:2%"></div></div>
-            <span class="sessions-num">167</span>
-          </div>
-        </td>
-        <td>0.7%</td>
-        <td>23.0s</td>
-        <td></td>
-      </tr>
+    <tbody id="traffic-tbody">
+      <tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-muted)">Loading…</td></tr>
     </tbody>
   </table>
 
-  <!-- CORE PAGE ENGAGEMENT -->
   <div class="section-label">Core page engagement</div>
   <table class="data-table page-row">
     <thead>
       <tr>
         <th>Page</th>
         <th>Views</th>
-        <th>Active users</th>
-        <th>Avg engagement</th>
-        <th>Signal</th>
+        <th>Avg duration</th>
+        <th>Engagement rate</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>/</td>
-        <td>4,377</td>
-        <td>3,520</td>
-        <td>22s</td>
-        <td><span class="kpi-tag tag-blue">top entry point</span></td>
-      </tr>
-      <tr>
-        <td>/pricing</td>
-        <td>2,792</td>
-        <td>944</td>
-        <td>40s</td>
-        <td><span class="kpi-tag tag-green">high intent · 3x revisit rate</span></td>
-      </tr>
-      <tr>
-        <td>/why-pavilion</td>
-        <td>214</td>
-        <td>195</td>
-        <td>14s</td>
-        <td><span class="kpi-tag tag-amber">low traffic · low engagement</span></td>
-      </tr>
-      <tr>
-        <td>/qualify (qualification gate)</td>
-        <td>1,362</td>
-        <td>1,098</td>
-        <td>11s</td>
-        <td><span class="kpi-tag tag-blue">routes to waitlist or app</span></td>
-      </tr>
-      <tr>
-        <td>/join (direct application)</td>
-        <td>739</td>
-        <td>453</td>
-        <td>8s</td>
-        <td><span class="kpi-tag tag-blue">direct membership app</span></td>
-      </tr>
-      <tr>
-        <td>/membership</td>
-        <td>737</td>
-        <td>620</td>
-        <td>20s</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>/events</td>
-        <td>409</td>
-        <td>129</td>
-        <td>45s</td>
-        <td><span class="kpi-tag tag-green">highest engagement on site</span></td>
-      </tr>
+    <tbody id="pages-tbody">
+      <tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted)">Loading…</td></tr>
     </tbody>
   </table>
 
-  <!-- ACTIONS -->
   <div class="section-label">Actions we're taking</div>
   <div class="actions-list">
     <div class="action-row">
@@ -623,13 +459,80 @@
 
   <div class="notes-box">
     <strong>Data notes</strong><br>
-    Two date ranges: traffic/source data is May 13 – Jun 2 (post-attribution fix). Application funnel is quarter-to-date (Apr 1 – Jun 2) for a more stable sample.<br>
-    Funnel excludes Pavilion Teams Members. Application data sourced from HubSpot; traffic data from GA4.<br>
-    Unassigned sessions (33%) reflect residual UTM drop-off in the Formsort-to-HubSpot handoff. Being monitored.<br>
-    Site-to-app conversion (~2.3%) is directional — pairs May 13 step 1 completions against May 13 sessions. Formsort step_loaded event not reaching GA4 reliably (iframe postMessage gap); HubSpot is the reliable source for funnel counts.<br>
-    /cmo-summit-2024 (10,599 views) excluded from core page analysis — event registrant traffic, not prospect traffic.
+    Traffic and page data from GA4. Application funnel and membership data from HubSpot.<br>
+    WoW deltas compare to the equivalent week prior. Unassigned sessions (~33%) reflect residual UTM drop-off — channel splits are directional.<br>
+    Completion rate = applications submitted / applications started. Site conversion = applications started / total sessions.
   </div>
 
 </div>
+
+<script>
+  fetch('./data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(d => {
+      function set(id, val) {
+        const el = document.getElementById(id);
+        if (el && val != null) el.textContent = val;
+      }
+
+      function setDelta(id, num) {
+        const el = document.getElementById(id);
+        if (!el || num == null) return;
+        const up = num > 0, down = num < 0;
+        el.className = 'kpi-delta ' + (up ? 'up' : down ? 'down' : 'flat');
+        const arrow = up ? '↑' : down ? '↓' : '→';
+        el.innerHTML = '<span class="arrow">' + arrow + '</span> '
+          + Math.abs(num).toFixed(1) + '% '
+          + '<span class="delta-label">WoW</span>';
+      }
+
+      set('val-week-label', d.week_date ? 'week of ' + d.week_date : '');
+      set('val-last-updated', d.updated_at);
+
+      set('val-sessions',   d.sessions);    setDelta('delta-sessions',   d.sessions_delta);
+      set('val-apps',       d.apps);        setDelta('delta-apps',       d.apps_delta);
+      set('val-icp',        d.icp);         setDelta('delta-icp',        d.icp_delta);
+      set('val-conversion', d.conversion);  setDelta('delta-conversion', d.conversion_delta);
+      set('val-new-users',  d.new_users);   setDelta('delta-new-users',  d.new_users_delta);
+      set('val-completion', d.completion);  setDelta('delta-completion', d.completion_delta);
+      set('val-members',    d.members);     setDelta('delta-members',    d.members_delta);
+      set('val-waitlist',   d.waitlist);    setDelta('delta-waitlist',   d.waitlist_delta);
+
+      const trafficTbody = document.getElementById('traffic-tbody');
+      if (trafficTbody && d.traffic && d.traffic.length) {
+        const maxS = Math.max(...d.traffic.map(r => parseInt(String(r.sessions).replace(/,/g,'')) || 0));
+        trafficTbody.innerHTML = d.traffic.map(r => {
+          const n = parseInt(String(r.sessions).replace(/,/g,'')) || 0;
+          const bar = maxS > 0 ? Math.round(n / maxS * 100) : 0;
+          const isUn = r.channel.toLowerCase() === 'unassigned';
+          const wow = r.wow != null
+            ? '<span class="kpi-tag ' + (r.wow > 0 ? 'tag-green' : 'tag-red') + '">'
+              + (r.wow > 0 ? '↑' : '↓') + ' ' + Math.abs(r.wow).toFixed(1) + '%</span>'
+            : '';
+          return '<tr>'
+            + '<td>' + r.channel + '</td>'
+            + '<td><div class="bar-wrap"><div class="bar-bg">'
+            + '<div class="bar-fill' + (isUn ? ' unassigned' : '') + '" style="width:' + bar + '%"></div>'
+            + '</div><span class="sessions-num">' + r.sessions + '</span></div></td>'
+            + '<td>' + wow + '</td>'
+            + '</tr>';
+        }).join('');
+      }
+
+      const pagesTbody = document.getElementById('pages-tbody');
+      if (pagesTbody && d.pages && d.pages.length) {
+        pagesTbody.innerHTML = d.pages.map(r =>
+          '<tr>'
+          + '<td>' + r.url + '</td>'
+          + '<td>' + r.views + '</td>'
+          + '<td>' + r.duration + '</td>'
+          + '<td>' + r.engagement_rate + '</td>'
+          + '</tr>'
+        ).join('');
+      }
+    })
+    .catch(err => console.warn('Could not load data.json:', err));
+</script>
+
 </body>
 </html>

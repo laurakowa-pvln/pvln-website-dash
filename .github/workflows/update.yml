@@ -1,0 +1,35 @@
+name: Update dashboard data
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # noon UTC daily
+  workflow_dispatch:         # allow manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch sheet data
+        run: python update_dashboard.py
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name  "dashboard-bot"
+          git config user.email "bot@joinpavilion.com"
+          git add data.json
+          git diff --staged --quiet && echo "No changes." || (
+            git commit -m "Data refresh $(date -u '+%Y-%m-%d')" &&
+            git push
+          )
