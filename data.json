@@ -1,15 +1,15 @@
 {
-  "week_date": "154",
-  "updated_at": "6 June 2026",
-  "sessions": "172",
+  "week_date": "165",
+  "updated_at": "7 June 2026",
+  "sessions": "142",
   "sessions_delta": null,
-  "new_users": "142",
+  "new_users": "124",
   "new_users_delta": null,
-  "apps": "124",
+  "apps": "132",
   "apps_delta": null,
-  "icp": "132",
+  "icp": "137",
   "icp_delta": null,
-  "conversion": "137",
+  "conversion": "155",
   "conversion_delta": null,
   "completion": "\u2014",
   "completion_delta": null,
@@ -19,93 +19,93 @@
   "waitlist_delta": null,
   "traffic": [
     {
-      "channel": "5/31/2026",
-      "sessions": "9",
-      "wow": null
-    },
-    {
-      "channel": "6/1/2026",
-      "sessions": "9",
-      "wow": null
-    },
-    {
-      "channel": "6/2/2026",
+      "channel": "6/7/2026",
       "sessions": "0",
       "wow": null
     },
     {
-      "channel": "6/3/2026",
+      "channel": "6/8/2026",
       "sessions": "0",
       "wow": null
     },
     {
-      "channel": "6/4/2026",
+      "channel": "6/9/2026",
       "sessions": "0",
       "wow": null
     },
     {
-      "channel": "6/5/2026",
+      "channel": "6/10/2026",
       "sessions": "0",
       "wow": null
     },
     {
-      "channel": "6/6/2026",
+      "channel": "6/11/2026",
+      "sessions": "0",
+      "wow": null
+    },
+    {
+      "channel": "6/12/2026",
+      "sessions": "0",
+      "wow": null
+    },
+    {
+      "channel": "6/13/2026",
       "sessions": "0",
       "wow": null
     }
   ],
   "pages": [
     {
-      "url": "-35.64%",
-      "views": "146.5",
-      "duration": "65",
+      "url": "-72.31%",
+      "views": "148",
+      "duration": "18",
       "engagement_rate": "\u2014"
     },
     {
-      "url": "-72.31%",
-      "views": "146.5",
+      "url": "-100.00%",
+      "views": "148",
+      "duration": "\u2014",
+      "engagement_rate": "\u2014"
+    },
+    {
+      "url": "-9",
+      "views": "-100.00%",
+      "duration": "\u2014",
+      "engagement_rate": "\u2014"
+    },
+    {
+      "url": "-9",
+      "views": "-100.00%",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     },
     {
       "url": "0",
-      "views": "0.00%",
+      "views": "\u2014",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     },
     {
-      "url": "-2",
-      "views": "-18.18%",
+      "url": "0",
+      "views": "\u2014",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     },
     {
-      "url": "-17",
-      "views": "-100.00%",
+      "url": "0",
+      "views": "\u2014",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     },
     {
-      "url": "-11",
-      "views": "-100.00%",
+      "url": "0",
+      "views": "\u2014",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     },
     {
-      "url": "-12",
-      "views": "-100.00%",
-      "duration": "\u2014",
-      "engagement_rate": "\u2014"
-    },
-    {
-      "url": "-3",
-      "views": "-100.00%",
-      "duration": "\u2014",
-      "engagement_rate": "\u2014"
-    },
-    {
-      "url": "-2",
-      "views": "-100.00%",
+      "url": "0",
+      "views": "\u2014",
       "duration": "\u2014",
       "engagement_rate": "\u2014"
     }
