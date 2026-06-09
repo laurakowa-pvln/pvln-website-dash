@@ -1,8 +1,9 @@
 name: Update dashboard data
 
 on:
-  schedule:
-    - cron: "0 12 * * *"   # noon UTC daily
+  # schedule paused — sheet layout changed, needs fix before re-enabling
+  # schedule:
+  #   - cron: "0 12 * * *"   # noon UTC daily
   workflow_dispatch:         # allow manual trigger from GitHub UI
 
 jobs:
