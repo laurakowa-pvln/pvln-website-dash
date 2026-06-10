@@ -2,7 +2,7 @@ name: Update dashboard data
 
 on:
   schedule:
-    - cron: "0 12 * * 1"   # Mondays at noon UTC (after weekend data lands)
+    - cron: "0 8 * * 1"    # Mondays at 3am EST (8am UTC) (after weekend data lands)
   workflow_dispatch:         # allow manual trigger from GitHub UI
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Fetch sheet data
         run: python update_dashboard.py
         env:
-          HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+          HUBSPOT_PAK: ${{ secrets.HUBSPOT_PAK }}
 
       - name: Commit and push if data changed
         run: |
