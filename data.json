@@ -9,14 +9,14 @@
   "apps_delta": 11.0,
   "icp": "36",
   "icp_delta": 44.0,
-  "conversion": "2.5%",
-  "conversion_delta": 92.3,
   "completion": "77.6%",
-  "completion_delta": 69.9,
+  "completion_delta": 69.8,
   "members": "37",
   "members_delta": 37.0,
   "waitlist": "19",
   "waitlist_delta": 216.7,
+  "conversion": "2.5%",
+  "conversion_delta": 56.2,
   "traffic": [
     {
       "channel": "Direct",

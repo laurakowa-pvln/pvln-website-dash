@@ -171,12 +171,30 @@ def get_traffic(week_start, week_end, prev_start, prev_end):
     return result
 
 
-# ── HubSpot (optional — requires HUBSPOT_TOKEN env var) ───────────────────────
+# ── HubSpot (requires HUBSPOT_PAK or HUBSPOT_TOKEN env var) ───────────────────
+
+def get_hubspot_token():
+    """Get a fresh HubSpot access token. Tries PAK exchange first, falls back to direct token."""
+    token = os.environ.get("HUBSPOT_TOKEN", "")
+    if token:
+        return token
+    pak = os.environ.get("HUBSPOT_PAK", "")
+    if not pak:
+        return None
+    portal_id = os.environ.get("HUBSPOT_PORTAL_ID", "5242563")
+    r = requests.post(
+        f"https://api.hubspot.com/localdevauth/v1/auth/refresh?portalId={portal_id}",
+        json={"encodedOAuthRefreshToken": pak},
+        timeout=15,
+    )
+    r.raise_for_status()
+    return r.json().get("oauthAccessToken", "")
+
 
 def get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing):
-    token = os.environ.get("HUBSPOT_TOKEN", "")
+    token = get_hubspot_token()
     if not token:
-        print("  HUBSPOT_TOKEN not set — preserving existing HubSpot values.")
+        print("  HUBSPOT_PAK / HUBSPOT_TOKEN not set — preserving existing HubSpot values.")
         return {k: existing.get(k) for k in [
             'apps', 'apps_delta', 'icp', 'icp_delta',
             'conversion', 'conversion_delta',
@@ -193,10 +211,16 @@ def get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing):
         r.raise_for_status()
         return r.json().get("total", 0)
 
+    def to_ms(d, end_of_day=False):
+        from datetime import datetime
+        dt = datetime(d.year, d.month, d.day, 23, 59, 59 if end_of_day else 0, 0,
+                      tzinfo=timezone.utc)
+        return int(dt.timestamp() * 1000)
+
     def date_filters(prop, start, end):
         return [{"filters": [
-            {"propertyName": prop, "operator": "GTE", "value": str(start)},
-            {"propertyName": prop, "operator": "LTE", "value": str(end)},
+            {"propertyName": prop, "operator": "GTE", "value": str(to_ms(start))},
+            {"propertyName": prop, "operator": "LTE", "value": str(to_ms(end, end_of_day=True))},
         ]}]
 
     print("  Fetching HubSpot metrics...")
@@ -206,13 +230,13 @@ def get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing):
     step2_b = hs_count(date_filters("step_2_completed_date", prev_start, prev_end))
 
     icp_filters_a = [{"filters": [
-        {"propertyName": "step_1_completed_date", "operator": "GTE", "value": str(week_start)},
-        {"propertyName": "step_1_completed_date", "operator": "LTE", "value": str(week_end)},
+        {"propertyName": "step_1_completed_date", "operator": "GTE", "value": str(to_ms(week_start))},
+        {"propertyName": "step_1_completed_date", "operator": "LTE", "value": str(to_ms(week_end, end_of_day=True))},
         {"propertyName": "pavilion_icp",          "operator": "EQ",  "value": "true"},
     ]}]
     icp_filters_b = [{"filters": [
-        {"propertyName": "step_1_completed_date", "operator": "GTE", "value": str(prev_start)},
-        {"propertyName": "step_1_completed_date", "operator": "LTE", "value": str(prev_end)},
+        {"propertyName": "step_1_completed_date", "operator": "GTE", "value": str(to_ms(prev_start))},
+        {"propertyName": "step_1_completed_date", "operator": "LTE", "value": str(to_ms(prev_end, end_of_day=True))},
         {"propertyName": "pavilion_icp",          "operator": "EQ",  "value": "true"},
     ]}]
     icp_a = hs_count(icp_filters_a)
@@ -274,7 +298,7 @@ def main():
     conv_b = round(sessions_conv_b_val / sessions_b * 100, 1) if sessions_b and sessions_conv_b_val else None
 
     # If HubSpot token available, recalculate conversion with fresh data
-    if os.environ.get("HUBSPOT_TOKEN"):
+    if os.environ.get("HUBSPOT_TOKEN") or os.environ.get("HUBSPOT_PAK"):
         hs['conversion'] = f"{conv_a}%"
         hs['conversion_delta'] = wow_pct(conv_a, conv_b) if conv_b else None
 
