@@ -1,46 +1,161 @@
 {
-  "week_date": "5/24/2026",
-  "updated_at": "9 June 2026",
-  "sessions": "12,142",
-  "sessions_delta": 170.1,
-  "new_users": "10,377",
-  "new_users_delta": 261.7,
-  "apps": "154",
-  "apps_delta": -18.1,
-  "icp": "6",
-  "icp_delta": -40.0,
-  "conversion": "1.3%",
-  "conversion_delta": -69.7,
-  "completion": "42.21%",
-  "completion_delta": -21.44,
-  "members": "16",
-  "members_delta": -44.83,
-  "waitlist": "6",
-  "waitlist_delta": -53.85,
+  "week_date": "5/31/2026",
+  "updated_at": "10 June 2026",
+  "sessions": "7,620",
+  "sessions_delta": -37.2,
+  "new_users": "6,149",
+  "new_users_delta": -40.7,
+  "apps": "192",
+  "apps_delta": 11.0,
+  "icp": "36",
+  "icp_delta": 44.0,
+  "conversion": "2.5%",
+  "conversion_delta": 92.3,
+  "completion": "77.6%",
+  "completion_delta": 69.9,
+  "members": "37",
+  "members_delta": 37.0,
+  "waitlist": "19",
+  "waitlist_delta": 216.7,
   "traffic": [
-    { "channel": "Direct",         "sessions": "2,278", "wow":   12.61 },
-    { "channel": "Organic Search", "sessions": "1,159", "wow":    0.52 },
-    { "channel": "Organic Social", "sessions": "1,943", "wow": 1010.29 },
-    { "channel": "Unassigned",     "sessions": "5,769", "wow": 1317.44 },
-    { "channel": "Referral",       "sessions":   "390", "wow":   31.31 },
-    { "channel": "Email",          "sessions":   "233", "wow":  -19.38 },
-    { "channel": "Paid Search",    "sessions":    "54", "wow":  -20.59 },
-    { "channel": "Paid Social",    "sessions":    "22", "wow":   46.67 },
-    { "channel": "Paid Other",     "sessions":    "21", "wow":    5.00 },
-    { "channel": "Organic Video",  "sessions":     "2", "wow":  -33.33 }
+    {
+      "channel": "Direct",
+      "sessions": "2,766",
+      "wow": 28.7
+    },
+    {
+      "channel": "Unassigned",
+      "sessions": "1,840",
+      "wow": -67.8
+    },
+    {
+      "channel": "Organic Search",
+      "sessions": "895",
+      "wow": 8.6
+    },
+    {
+      "channel": "Organic Social",
+      "sessions": "679",
+      "wow": -64.7
+    },
+    {
+      "channel": "Email",
+      "sessions": "300",
+      "wow": 79.6
+    },
+    {
+      "channel": "Referral",
+      "sessions": "245",
+      "wow": -16.4
+    },
+    {
+      "channel": "Paid Search",
+      "sessions": "31",
+      "wow": -11.4
+    },
+    {
+      "channel": "Display",
+      "sessions": "29",
+      "wow": 93.3
+    },
+    {
+      "channel": "Paid Social",
+      "sessions": "15",
+      "wow": -31.8
+    },
+    {
+      "channel": "Paid Other",
+      "sessions": "10",
+      "wow": -28.6
+    },
+    {
+      "channel": "Paid Video",
+      "sessions": "3",
+      "wow": -25.0
+    },
+    {
+      "channel": "Organic Video",
+      "sessions": "3",
+      "wow": 200.0
+    },
+    {
+      "channel": "Cross-network",
+      "sessions": "1",
+      "wow": -85.7
+    }
   ],
   "pages": [
-    { "url": "/",                    "views": "1,460", "duration": "1 min 26 sec", "engagement_rate": "85%" },
-    { "url": "/pricing",             "views":   "897", "duration": "1 min 49 sec", "engagement_rate": "81%" },
-    { "url": "/qualify",             "views":   "547", "duration": "0 min 41 sec", "engagement_rate": "86%" },
-    { "url": "/join",                "views":   "254", "duration": "1 min 20 sec", "engagement_rate": "79%" },
-    { "url": "/membership",          "views":   "269", "duration": "0 min 53 sec", "engagement_rate": "84%" },
-    { "url": "/pavilion-university", "views":    "99", "duration": "1 min 6 sec",  "engagement_rate": "75%" },
-    { "url": "/events-at-pavilion",  "views":    "86", "duration": "0 min 58 sec", "engagement_rate": "68%" },
-    { "url": "/why-pavilion",        "views":    "88", "duration": "0 min 56 sec", "engagement_rate": "81%" },
-    { "url": "/chapters",            "views":   "100", "duration": "1 min 2 sec",  "engagement_rate": "88%" },
-    { "url": "/executive-membership","views":   "116", "duration": "0 min 21 sec", "engagement_rate": "89%" },
-    { "url": "/associate-membership","views":    "99", "duration": "1 min 16 sec", "engagement_rate": "82%" },
-    { "url": "/access",              "views":    "70", "duration": "3 min 47 sec", "engagement_rate": "84%" }
+    {
+      "url": "/",
+      "views": "1,460",
+      "duration": "1 min 26 sec",
+      "engagement_rate": "85%"
+    },
+    {
+      "url": "/pricing",
+      "views": "897",
+      "duration": "1 min 49 sec",
+      "engagement_rate": "81%"
+    },
+    {
+      "url": "/qualify",
+      "views": "547",
+      "duration": "0 min 41 sec",
+      "engagement_rate": "86%"
+    },
+    {
+      "url": "/join",
+      "views": "254",
+      "duration": "1 min 20 sec",
+      "engagement_rate": "79%"
+    },
+    {
+      "url": "/membership",
+      "views": "269",
+      "duration": "0 min 53 sec",
+      "engagement_rate": "84%"
+    },
+    {
+      "url": "/pavilion-university",
+      "views": "99",
+      "duration": "1 min 6 sec",
+      "engagement_rate": "75%"
+    },
+    {
+      "url": "/events-at-pavilion",
+      "views": "86",
+      "duration": "0 min 58 sec",
+      "engagement_rate": "68%"
+    },
+    {
+      "url": "/why-pavilion",
+      "views": "88",
+      "duration": "0 min 56 sec",
+      "engagement_rate": "81%"
+    },
+    {
+      "url": "/chapters",
+      "views": "100",
+      "duration": "1 min 2 sec",
+      "engagement_rate": "88%"
+    },
+    {
+      "url": "/executive-membership",
+      "views": "116",
+      "duration": "0 min 21 sec",
+      "engagement_rate": "89%"
+    },
+    {
+      "url": "/associate-membership",
+      "views": "99",
+      "duration": "1 min 16 sec",
+      "engagement_rate": "82%"
+    },
+    {
+      "url": "/access",
+      "views": "70",
+      "duration": "3 min 47 sec",
+      "engagement_rate": "84%"
+    }
   ]
 }
