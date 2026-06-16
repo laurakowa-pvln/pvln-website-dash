@@ -286,6 +286,10 @@ def main():
         week_start, week_end, prev_start, prev_end
     )
 
+    if sessions_a == 0:
+        print("No GA4 data found for this week yet — sheet may not have updated. Keeping existing data.json.")
+        sys.exit(0)
+
     print("Fetching GA4 traffic by channel...")
     traffic = get_traffic(week_start, week_end, prev_start, prev_end)
 
