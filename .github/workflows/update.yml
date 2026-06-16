@@ -19,11 +19,12 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests google-auth
 
-      - name: Fetch sheet data
+      - name: Fetch data
         run: python update_dashboard.py
         env:
+          GA4_SERVICE_ACCOUNT_JSON: ${{ secrets.GA4_SERVICE_ACCOUNT_JSON }}
           HUBSPOT_PAK: ${{ secrets.HUBSPOT_PAK }}
 
       - name: Commit and push if data changed

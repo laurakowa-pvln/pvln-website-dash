@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 """
-Fetches weekly GA4 data from raw Google Sheet tabs and writes data.json.
-HubSpot metrics (apps, ICP, completion, members, waitlist) require a separate
-HubSpot Private App token — set HUBSPOT_TOKEN env var to enable auto-pull,
-otherwise existing values in data.json are preserved.
+Fetches weekly GA4 data directly via the Analytics Data API and HubSpot CRM,
+then writes data.json for the GitHub Pages dashboard.
+Requires: GA4_SERVICE_ACCOUNT_JSON and HUBSPOT_PAK env vars.
 """
 
 import json
 import os
-import re
 import sys
 import requests
 from datetime import date, timedelta, timezone, datetime
 
-SHEET_ID = "1dSUyCL4P1tFQGPkYRSIt35bvJYKvgPB7VrnQ5DWMOj4"
-TRAFFIC_GID = 351180145   # raw daily traffic-by-channel tab
+GA4_PROPERTY_ID = "348455384"
 OUTPUT_FILE = "data.json"
 
 
@@ -23,11 +20,9 @@ OUTPUT_FILE = "data.json"
 def last_complete_week():
     """Returns (start, end) of the most recently completed Sun–Sat week."""
     today = date.today()
-    # weekday(): Mon=0 … Sat=5, Sun=6
-    # days since last Saturday (if today IS Saturday, use last Saturday = 7 days ago)
     days_since_sat = (today.weekday() - 5) % 7 or 7
-    end = today - timedelta(days=days_since_sat)    # last Saturday
-    start = end - timedelta(days=6)                 # preceding Sunday
+    end = today - timedelta(days=days_since_sat)
+    start = end - timedelta(days=6)
     return start, end
 
 
@@ -35,65 +30,10 @@ def prev_week(start, end):
     return start - timedelta(days=7), end - timedelta(days=7)
 
 
-# ── Sheet fetcher ─────────────────────────────────────────────────────────────
-
-def fetch_gid(gid):
-    url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:json&gid={gid}"
-    r = requests.get(url, timeout=20)
-    r.raise_for_status()
-    match = re.search(r"setResponse\(([\s\S]*?)\);\s*$", r.text)
-    if not match:
-        raise ValueError(f"Could not parse gviz response for gid {gid}")
-    data = json.loads(match.group(1))
-    rows = []
-    for row in data.get("table", {}).get("rows", []) or []:
-        cells = []
-        for cell in row.get("c", []) or []:
-            if cell is None:
-                cells.append("")
-            else:
-                val = cell.get("f") or cell.get("v")
-                cells.append(str(val) if val is not None else "")
-        rows.append(cells)
-    return rows
-
-
-def fetch_sheet_name(sheet_name):
-    import urllib.parse
-    url = (f"https://docs.google.com/spreadsheets/d/{SHEET_ID}"
-           f"/gviz/tq?tqx=out:json&sheet={urllib.parse.quote(sheet_name)}")
-    r = requests.get(url, timeout=20)
-    r.raise_for_status()
-    match = re.search(r"setResponse\(([\s\S]*?)\);\s*$", r.text)
-    if not match:
-        return []
-    data = json.loads(match.group(1))
-    rows = []
-    for row in data.get("table", {}).get("rows", []) or []:
-        cells = []
-        for cell in row.get("c", []) or []:
-            if cell is None:
-                cells.append("")
-            else:
-                val = cell.get("f") or cell.get("v")
-                cells.append(str(val) if val is not None else "")
-        rows.append(cells)
-    return rows
-
-
-# ── Parsers ───────────────────────────────────────────────────────────────────
-
-def parse_date(s):
-    try:
-        parts = s.strip().split('/')
-        if len(parts) == 3:
-            return date(int(parts[2]), int(parts[0]), int(parts[1]))
-    except Exception:
-        pass
-    try:
-        return date.fromisoformat(s.strip()[:10])
-    except Exception:
+def wow_pct(this, prev):
+    if not prev:
         return None
+    return round((this - prev) / prev * 100, 1)
 
 
 def to_int(s):
@@ -103,78 +43,73 @@ def to_int(s):
         return 0
 
 
-def wow_pct(this, prev):
-    if not prev:
-        return None
-    return round((this - prev) / prev * 100, 1)
+# ── GA4 ───────────────────────────────────────────────────────────────────────
+
+def get_ga4_token():
+    sa_json = os.environ.get('GA4_SERVICE_ACCOUNT_JSON', '')
+    if not sa_json:
+        raise ValueError('GA4_SERVICE_ACCOUNT_JSON env var not set')
+    from google.oauth2 import service_account
+    import google.auth.transport.requests
+    creds = service_account.Credentials.from_service_account_info(
+        json.loads(sa_json),
+        scopes=['https://www.googleapis.com/auth/analytics.readonly'])
+    creds.refresh(google.auth.transport.requests.Request())
+    return creds.token
 
 
-# ── GA4: sessions + new users from user health_raw ───────────────────────────
-
-def get_ga4_health(week_start, week_end, prev_start, prev_end):
-    rows = fetch_sheet_name("user health_raw")
-    # Columns (0-based after date): [sessions, users, engaged, new_users, other]
-    # Confirmed: col[4] = new_users (matched historical data)
-    totals = {
-        'sessions': {True: 0, False: 0},
-        'new_users': {True: 0, False: 0},
-    }
-    for row in rows:
-        if not row:
-            continue
-        d = parse_date(row[0])
-        if not d:
-            continue
-        is_this = week_start <= d <= week_end
-        is_prev = prev_start <= d <= prev_end
-        if not is_this and not is_prev:
-            continue
-        sessions = to_int(row[1]) if len(row) > 1 else 0
-        new_users = to_int(row[4]) if len(row) > 4 else 0
-        flag = is_this
-        totals['sessions'][flag] += sessions
-        totals['new_users'][flag] += new_users
-    return (
-        totals['sessions'][True],  totals['sessions'][False],
-        totals['new_users'][True], totals['new_users'][False],
-    )
+def ga4_report(token, body):
+    url = f"https://analyticsdata.googleapis.com/v1beta/properties/{GA4_PROPERTY_ID}:runReport"
+    r = requests.post(url, json=body,
+                      headers={"Authorization": f"Bearer {token}"}, timeout=30)
+    r.raise_for_status()
+    return r.json()
 
 
-# ── GA4: traffic by channel ───────────────────────────────────────────────────
+def get_ga4_health(token, week_start, week_end, prev_start, prev_end):
+    data = ga4_report(token, {
+        "dateRanges": [
+            {"startDate": str(week_start), "endDate": str(week_end), "name": "this_week"},
+            {"startDate": str(prev_start), "endDate": str(prev_end), "name": "prev_week"},
+        ],
+        "metrics": [{"name": "sessions"}, {"name": "newUsers"}],
+    })
+    result = {"this_week": (0, 0), "prev_week": (0, 0)}
+    for row in data.get("rows", []):
+        rng = row["dimensionValues"][0]["value"]
+        sessions  = int(row["metricValues"][0]["value"])
+        new_users = int(row["metricValues"][1]["value"])
+        result[rng] = (sessions, new_users)
+    tw, pw = result["this_week"], result["prev_week"]
+    return tw[0], pw[0], tw[1], pw[1]
 
-def get_traffic(week_start, week_end, prev_start, prev_end):
-    rows = fetch_gid(TRAFFIC_GID)
-    # Columns: channel, date, sessions, ...
+
+def get_traffic(token, week_start, week_end, prev_start, prev_end):
+    data = ga4_report(token, {
+        "dateRanges": [
+            {"startDate": str(week_start), "endDate": str(week_end), "name": "this_week"},
+            {"startDate": str(prev_start), "endDate": str(prev_end), "name": "prev_week"},
+        ],
+        "dimensions": [{"name": "sessionDefaultChannelGroup"}],
+        "metrics": [{"name": "sessions"}],
+    })
     by_channel = {}
-    for row in rows:
-        if len(row) < 3:
-            continue
-        channel = row[0].strip()
-        d = parse_date(row[1])
-        if not d or not channel:
-            continue
-        sessions = to_int(row[2])
-        if week_start <= d <= week_end:
-            by_channel.setdefault(channel, {'a': 0, 'b': 0})['a'] += sessions
-        elif prev_start <= d <= prev_end:
-            by_channel.setdefault(channel, {'a': 0, 'b': 0})['b'] += sessions
+    for row in data.get("rows", []):
+        channel  = row["dimensionValues"][0]["value"]
+        rng      = row["dimensionValues"][1]["value"]
+        sessions = int(row["metricValues"][0]["value"])
+        by_channel.setdefault(channel, {"this_week": 0, "prev_week": 0})[rng] += sessions
 
-    result = []
-    for ch, v in sorted(by_channel.items(), key=lambda x: -x[1]['a']):
-        if v['a'] == 0 and v['b'] == 0:
-            continue
-        result.append({
-            "channel": ch,
-            "sessions": f"{v['a']:,}",
-            "wow": wow_pct(v['a'], v['b']),
-        })
-    return result
+    return [
+        {"channel": ch, "sessions": f"{v['this_week']:,}", "wow": wow_pct(v["this_week"], v["prev_week"])}
+        for ch, v in sorted(by_channel.items(), key=lambda x: -x[1]["this_week"])
+        if v["this_week"] or v["prev_week"]
+    ]
 
 
-# ── HubSpot (requires HUBSPOT_PAK or HUBSPOT_TOKEN env var) ───────────────────
+# ── HubSpot ───────────────────────────────────────────────────────────────────
 
 def get_hubspot_token():
-    """Get a fresh HubSpot access token. Tries PAK exchange first, falls back to direct token."""
     token = os.environ.get("HUBSPOT_TOKEN", "")
     if token:
         return token
@@ -212,8 +147,10 @@ def get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing):
         return r.json().get("total", 0)
 
     def to_ms(d, end_of_day=False):
-        from datetime import datetime
-        dt = datetime(d.year, d.month, d.day, 23, 59, 59 if end_of_day else 0, 0,
+        dt = datetime(d.year, d.month, d.day,
+                      23 if end_of_day else 0,
+                      59 if end_of_day else 0,
+                      59 if end_of_day else 0,
                       tzinfo=timezone.utc)
         return int(dt.timestamp() * 1000)
 
@@ -273,7 +210,6 @@ def main():
     print(f"Week:      {week_start} → {week_end}")
     print(f"Prev week: {prev_start} → {prev_end}")
 
-    # Load existing data.json to preserve any values we can't fetch
     existing = {}
     try:
         with open(OUTPUT_FILE) as f:
@@ -281,30 +217,28 @@ def main():
     except Exception:
         pass
 
-    print("Fetching GA4 health metrics...")
+    print("Fetching GA4 metrics...")
+    ga4_token = get_ga4_token()
     sessions_a, sessions_b, new_users_a, new_users_b = get_ga4_health(
-        week_start, week_end, prev_start, prev_end
-    )
+        ga4_token, week_start, week_end, prev_start, prev_end)
 
     if sessions_a == 0:
-        print("No GA4 data found for this week yet — sheet may not have updated. Keeping existing data.json.")
+        print("No GA4 sessions found for this week — data may not be ready yet. Keeping existing data.json.")
         sys.exit(0)
 
-    print("Fetching GA4 traffic by channel...")
-    traffic = get_traffic(week_start, week_end, prev_start, prev_end)
+    traffic = get_traffic(ga4_token, week_start, week_end, prev_start, prev_end)
 
     print("Fetching HubSpot metrics...")
     hs = get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing)
 
-    sessions_conv_a = to_int(str(hs.get('apps', '0')).replace(',', ''))
-    sessions_conv_b_val = to_int(str(existing.get('apps', '0')).replace(',', ''))
-    conv_a = round(sessions_conv_a / sessions_a * 100, 1) if sessions_a else 0
-    conv_b = round(sessions_conv_b_val / sessions_b * 100, 1) if sessions_b and sessions_conv_b_val else None
+    apps_a = to_int(str(hs.get('apps', '0')))
+    apps_b_prev = to_int(str(existing.get('apps', '0')))
+    conv_a = round(apps_a / sessions_a * 100, 1) if sessions_a else 0
+    conv_b = round(apps_b_prev / sessions_b * 100, 1) if sessions_b and apps_b_prev else None
 
-    # If HubSpot token available, recalculate conversion with fresh data
     if os.environ.get("HUBSPOT_TOKEN") or os.environ.get("HUBSPOT_PAK"):
         hs['conversion'] = f"{conv_a}%"
-        hs['conversion_delta'] = wow_pct(conv_a, conv_b) if conv_b else None
+        hs['conversion_delta'] = wow_pct(conv_a, conv_b) if conv_b is not None else None
 
     updated_at = datetime.now(timezone.utc).strftime("%-d %B %Y")
     week_label = week_start.strftime("%-m/%-d/%Y")
