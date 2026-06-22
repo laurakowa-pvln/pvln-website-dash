@@ -117,13 +117,17 @@ def get_hubspot_token():
     if not pak:
         return None
     portal_id = os.environ.get("HUBSPOT_PORTAL_ID", "5242563")
-    r = requests.post(
-        f"https://api.hubspot.com/localdevauth/v1/auth/refresh?portalId={portal_id}",
-        json={"encodedOAuthRefreshToken": pak},
-        timeout=15,
-    )
-    r.raise_for_status()
-    return r.json().get("oauthAccessToken", "")
+    try:
+        r = requests.post(
+            f"https://api.hubspot.com/localdevauth/v1/auth/refresh?portalId={portal_id}",
+            json={"encodedOAuthRefreshToken": pak},
+            timeout=20,
+        )
+        r.raise_for_status()
+        return r.json().get("oauthAccessToken", "")
+    except Exception as e:
+        print(f"  HubSpot PAK exchange failed ({e.__class__.__name__}) — preserving existing values.")
+        return None
 
 
 def get_hubspot_metrics(week_start, week_end, prev_start, prev_end, existing):
