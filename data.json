@@ -1,87 +1,87 @@
 {
-  "week_date": "9/20/2026",
-  "updated_at": "28 September 2026",
-  "sessions": "4,326",
-  "sessions_delta": -3.1,
-  "new_users": "2,806",
-  "new_users_delta": -8.9,
-  "apps": "172",
-  "apps_delta": -9.5,
-  "icp": "25",
-  "icp_delta": -3.8,
-  "completion": "77.9%",
-  "completion_delta": 18.4,
-  "members": "23",
-  "members_delta": -11.5,
+  "week_date": "9/27/2026",
+  "updated_at": "5 October 2026",
+  "sessions": "12,294",
+  "sessions_delta": 184.2,
+  "new_users": "10,774",
+  "new_users_delta": 284.0,
+  "apps": "211",
+  "apps_delta": 22.7,
+  "icp": "36",
+  "icp_delta": 44.0,
+  "completion": "71.1%",
+  "completion_delta": -8.7,
+  "members": "31",
+  "members_delta": 34.8,
   "waitlist": "0",
   "waitlist_delta": null,
-  "conversion": "4.0%",
-  "conversion_delta": -7.0,
+  "conversion": "1.7%",
+  "conversion_delta": -57.5,
   "traffic": [
     {
+      "channel": "Email",
+      "sessions": "7,919",
+      "wow": 1691.6
+    },
+    {
       "channel": "Direct",
-      "sessions": "1,801",
-      "wow": 3.2
+      "sessions": "1,872",
+      "wow": 3.9
     },
     {
       "channel": "Organic Search",
-      "sessions": "1,139",
-      "wow": 5.6
-    },
-    {
-      "channel": "Email",
-      "sessions": "442",
-      "wow": -28.9
+      "sessions": "1,243",
+      "wow": 9.1
     },
     {
       "channel": "Unassigned",
-      "sessions": "285",
-      "wow": -22.8
+      "sessions": "648",
+      "wow": 127.4
     },
     {
       "channel": "Organic Social",
-      "sessions": "199",
-      "wow": -5.2
+      "sessions": "209",
+      "wow": 5.0
     },
     {
       "channel": "Referral",
-      "sessions": "141",
-      "wow": 14.6
-    },
-    {
-      "channel": "Display",
-      "sessions": "104",
-      "wow": -2.8
+      "sessions": "144",
+      "wow": 2.1
     },
     {
       "channel": "AI Assistant",
-      "sessions": "67",
-      "wow": -44.2
+      "sessions": "92",
+      "wow": 37.3
     },
     {
       "channel": "Paid Search",
-      "sessions": "59",
-      "wow": 5.4
+      "sessions": "91",
+      "wow": 54.2
     },
     {
       "channel": "Paid Social",
-      "sessions": "22",
-      "wow": -43.6
+      "sessions": "48",
+      "wow": 118.2
     },
     {
       "channel": "Paid Other",
       "sessions": "14",
-      "wow": -12.5
+      "wow": 0.0
     },
     {
-      "channel": "Cross-network",
-      "sessions": "7",
-      "wow": 40.0
+      "channel": "Display",
+      "sessions": "13",
+      "wow": -87.5
     },
     {
       "channel": "Organic Video",
+      "sessions": "2",
+      "wow": 100.0
+    },
+    {
+      "channel": "Cross-network",
       "sessions": "1",
-      "wow": -75.0
+      "wow": -85.7
     }
   ],
   "pages": [
